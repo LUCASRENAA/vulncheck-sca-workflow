@@ -12,4 +12,4 @@ jobs:
       api_url: 'http://95.111.232.70/api/scans/'  # Pode ser alterado dinamicamente
       requirements_file: 'requirements.txt'     # Pode ser alterado dinamicamente
       technology: 'python'                      # Pode ser alterado dinamicamente
-    runs-on: ubuntu-latest
+    

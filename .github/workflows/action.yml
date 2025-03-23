@@ -25,29 +25,29 @@ jobs:
 
       # Passo 4: Verificar se "No vulnerabilities found" está no arquivo
       - name: Check if vulnerabilities found
-      run: |
-        if grep -q '"message": "No vulnerabilities found"' test.json; then
-          echo "Nenhuma vulnerabilidade encontrada."
-          exit 0  # Marca como falha se houver vulnerabilidades
-        else
-          echo "Vulnerabilidades encontradas."
-          vulnerabilities=$(cat test.json | jq -r '.vulnerabilities')
-        
-          echo "## Vulnerability Report" > vulnerabilities_report.md
-          echo "| CVE | Severity | Package | Description | CVSS Score | Remediation | Vulnerable Version | Fixed Version |" >> vulnerabilities_report.md
-          echo "| --- | -------- | ------- | ----------- | ---------- | ----------- | ------------------ | ------------- |" >> vulnerabilities_report.md
+        run: |
+          if grep -q '"message": "No vulnerabilities found"' test.json; then
+            echo "Nenhuma vulnerabilidade encontrada."
+            exit 0  # Marca como falha se houver vulnerabilidades
+          else
+            echo "Vulnerabilidades encontradas."
+            vulnerabilities=$(cat test.json | jq -r '.vulnerabilities')
           
-          # Sort vulnerabilities by severity and generate table rows with colors
-          echo "$vulnerabilities" | jq -r 'sort_by(.cvss_nvd_score) | reverse | .[] | 
-          "| \(.cve) | <span style=\"color: \(
-            if .severity == "CRITICAL" then "red" 
-            elif .severity == "HIGH" then "orange" 
-            elif .severity == "MEDIUM" then "yellow"
-            else "green" 
-          end)\"> \(.severity) </span> | \(.package_name) | \(.description) | \(.cvss_nvd_score) | [Remediation Link](\(.remediation)) | \(.vulnerable_version) | \(.fixed_version) |"' >> vulnerabilities_report.md
+            echo "## Vulnerability Report" > vulnerabilities_report.md
+            echo "| CVE | Severity | Package | Description | CVSS Score | Remediation | Vulnerable Version | Fixed Version |" >> vulnerabilities_report.md
+            echo "| --- | -------- | ------- | ----------- | ---------- | ----------- | ------------------ | ------------- |" >> vulnerabilities_report.md
+            
+            # Sort vulnerabilities by severity and generate table rows with colors
+            echo "$vulnerabilities" | jq -r 'sort_by(.cvss_nvd_score) | reverse | .[] | 
+            "| \(.cve) | <span style=\"color: \(
+              if .severity == "CRITICAL" then "red" 
+              elif .severity == "HIGH" then "orange" 
+              elif .severity == "MEDIUM" then "yellow"
+              else "green" 
+            end)\"> \(.severity) </span> | \(.package_name) | \(.description) | \(.cvss_nvd_score) | [Remediation Link](\(.remediation)) | \(.vulnerable_version) | \(.fixed_version) |"' >> vulnerabilities_report.md
 
-          cat vulnerabilities_report.md
-        fi
+            cat vulnerabilities_report.md
+          fi
 
       # Upload the vulnerabilities report as an artifact for later review
       - name: Upload vulnerability report as artifact

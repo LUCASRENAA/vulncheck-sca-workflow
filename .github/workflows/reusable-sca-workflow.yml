@@ -61,5 +61,5 @@ jobs:
           path: vulnerabilities_report.md
 
       - name: Finalizar com erro
-         run: |
-              exit 1
+        run: |
+          exit 1

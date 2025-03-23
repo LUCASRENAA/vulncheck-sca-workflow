@@ -7,11 +7,8 @@ on:
 
 jobs:
   trigger-reusable-workflow:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger reusable workflow
-        uses: LUCASRENAA/vulncheck-sca-workflow/.github/workflows/action.yml@teste-workflow-sca2
-        with:
-          api_url: 'http://95.111.232.70/api/scans/' # Can be dynamically changed
-          requirements_file: 'requirements.txt'     # Can be dynamically changed
-          technology: 'python'                     # Can be dynamically changed
+    uses: LUCASRENAA/vulncheck-sca-workflow/.github/workflows/action.yml@teste-workflow-sca2
+    with:
+      api_url: 'http://95.111.232.70/api/scans/' # Can be dynamically changed
+      requirements_file: 'requirements.txt'     # Can be dynamically changed
+      technology: 'python'                     # Can be dynamically changed

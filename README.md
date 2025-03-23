@@ -1,4 +1,4 @@
-<!-- # Vulncheck SCA Workflow
+# Vulncheck SCA Workflow
 
 A reusable GitHub Actions workflow for scanning Python dependencies for security vulnerabilities using Software Composition Analysis (SCA).
 

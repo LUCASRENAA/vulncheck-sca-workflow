@@ -1,0 +1,15 @@
+name: Run SCA Analysis
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  security-scan:
+    uses: LUCASRENAA/vulncheck-sca-workflow/.github/workflows/reusable-sca-workflow.yml@teste-workflow
+    with:
+      requirements_file: 'requirements.txt'
+      technology: 'python'
+      api_url: 'http://95.111.232.70/api/scans/'

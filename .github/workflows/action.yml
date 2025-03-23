@@ -5,15 +5,15 @@ on:
     inputs:
       api_url:
         description: 'URL da API Django'
-        required: true
+        required: false
         default: 'http://95.111.232.70/api/scans/'
       requirements_file:
         description: 'Caminho do arquivo requirements.txt'
-        required: true
+        required: false
         default: 'requirements.txt'
       technology:
         description: 'Tecnologia a ser utilizada'
-        required: true
+        required: false
         default: 'python'
 
 jobs:

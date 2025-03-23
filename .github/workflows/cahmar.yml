@@ -5,7 +5,7 @@ on:
 
 jobs:
   call-workflow:
-    uses: LUCASRENAA/vulncheck-sca-workflow/.github/workflows/action.yml@teste-workflow-sca2
+    uses: LUCASRENAA/vulncheck-sca-workflow/.github/workflows/action.yml@teste-workflow-sca3
     # Se precisar passar secrets:
     # secrets:
     #   secret_name: ${{ secrets.SECRET_NAME }}

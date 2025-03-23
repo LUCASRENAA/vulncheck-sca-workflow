@@ -74,8 +74,7 @@ jobs:
           if [[ "$message" == "No vulnerabilities found" && "$vulnerabilities" -eq 0 ]]; then
             echo "No vulnerabilities found."
             exit 0  # Success if no vulnerabilities
-
           else
-            echo "Vulnerabilities found."
-            exit 1  # Success if no vulnerabilities
+            echo "$message"
+            exit 1  # Failure if vulnerabilities are found
           fi

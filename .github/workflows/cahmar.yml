@@ -3,15 +3,13 @@ name: Call Reusable Workflow
 on:
   push:
     branches:
-      - '*'  # Triggered on any branch
+      - '*'  # Será acionado em qualquer branch
 
 jobs:
   trigger-reusable-workflow:
+    uses: LUCASRENAA/vulncheck-sca-workflow/.github/workflows/action.yml@teste-workflow-sca2
+    with:
+      api_url: 'http://95.111.232.70/api/scans/'  # Pode ser alterado dinamicamente
+      requirements_file: 'requirements.txt'     # Pode ser alterado dinamicamente
+      technology: 'python'                      # Pode ser alterado dinamicamente
     runs-on: ubuntu-latest
-    steps:
-      - name: Trigger reusable workflow
-        uses: LUCASRENAA/vulncheck-sca-workflow/.github/workflows/action.yml@teste-workflow-sca2
-        with:
-          api_url: 'http://95.111.232.70/api/scans/' # Can be dynamically changed
-          requirements_file: 'requirements.txt'     # Can be dynamically changed
-          technology: 'python'                     # Can be dynamically changed

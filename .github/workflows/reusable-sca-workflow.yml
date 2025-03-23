@@ -37,14 +37,19 @@ jobs:
 
       - name: Generate Vulnerability Report
         run: |
-          if grep -q '"message": "No vulnerabilities found"' test.json; then
+          # Check if the "message" field indicates no vulnerabilities
+          message=$(jq -r '.message' test.json)
+          vulnerabilities=$(jq -r '.vulnerabilities | length' test.json)
+
+          if [[ "$message" == "No vulnerabilities found" && "$vulnerabilities" -eq 0 ]]; then
             echo "No vulnerabilities found."
-            exit 0
+            exit 0  # Success if no vulnerabilities
           else
             echo "## Vulnerability Report" > vulnerabilities_report.md
             echo "| CVE | Severity | Package | Description | CVSS Score | Remediation | Vulnerable Version | Fixed Version |" >> vulnerabilities_report.md
             echo "| --- | -------- | ------- | ----------- | ---------- | ----------- | ------------------ | ------------- |" >> vulnerabilities_report.md
-            
+
+            # Process vulnerabilities if they exist
             cat test.json | jq -r '.vulnerabilities | sort_by(.cvss_nvd_score) | reverse | .[] | 
             "| \(.cve) | <span style=\"color: \(
               if .severity == "CRITICAL" then "red" 
@@ -53,6 +58,7 @@ jobs:
               else "green" 
             end)\"> \(.severity) </span> | \(.package_name) | \(.description) | \(.cvss_nvd_score) | [Remediation Link](\(.remediation)) | \(.vulnerable_version) | \(.fixed_version) |"' >> vulnerabilities_report.md
           fi
+
 
       - name: Upload Report
         uses: actions/upload-artifact@v4

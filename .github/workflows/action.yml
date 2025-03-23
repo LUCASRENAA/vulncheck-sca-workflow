@@ -1,7 +1,7 @@
 name: Reusable Workflow Example
 
 on:
-  workflow_call:
+  workflow_call:                              
     inputs:
       api_url:
         description: 'URL da API Django'

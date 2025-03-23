@@ -1,6 +1,9 @@
 name: Reusable Workflow Example
 
 on:
+  push:
+      branches:
+        - '*'  # Triggered on any branch
   workflow_call:                              
     inputs:
       api_url:

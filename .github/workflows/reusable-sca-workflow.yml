@@ -60,6 +60,9 @@ jobs:
           name: vulnerability-report
           path: vulnerabilities_report.md
 
-      - name: Finalizar com erro
+      - name: Check for vulnerabilities
         run: |
-          exit 1
+          if ! grep -q '"message": "No vulnerabilities found"' test.json; then
+            echo "Vulnerabilidades encontradas - Finalizando com erro"
+            exit 1
+          fi

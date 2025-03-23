@@ -1,0 +1,80 @@
+name: Reusable SCA Workflow
+
+on:
+  workflow_call:
+    inputs:
+      api_url:
+        description: 'URL da API Django'
+        required: false
+        type: string
+        default: 'http://95.111.232.70/api/scans/'
+      requirements_file:
+        description: 'Caminho do arquivo requirements.txt'
+        required: false
+        type: string
+        default: 'requirements.txt'
+      technology:
+        description: 'Tecnologia a ser utilizada'
+        required: false
+        type: string
+        default: 'python'
+
+jobs:
+  scan-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Install jq
+        run: sudo apt-get install jq
+
+      - name: Run SCA Scan
+        run: |
+          curl -X POST "${{ inputs.api_url }}" \
+          -H "Content-Type: multipart/form-data" \
+          -F "file=@${{ inputs.requirements_file }}" \
+          -F "technology=${{ inputs.technology }}" -o test.json
+
+      - name: Generate Vulnerability Report
+        run: |
+          # Check if the "message" field indicates no vulnerabilities
+          message=$(jq -r '.message' test.json)
+          vulnerabilities=$(jq -r '.vulnerabilities | length' test.json)
+
+          if [[ "$message" == "No vulnerabilities found" && "$vulnerabilities" -eq 0 ]]; then
+            echo "No vulnerabilities found."
+            exit 0  # Success if no vulnerabilities
+          else
+            echo "## Vulnerability Report" > vulnerabilities_report.md
+            echo "| CVE | Severity | Package | Description | CVSS Score | Remediation | Vulnerable Version | Fixed Version |" >> vulnerabilities_report.md
+            echo "| --- | -------- | ------- | ----------- | ---------- | ----------- | ------------------ | ------------- |" >> vulnerabilities_report.md
+
+            # Process vulnerabilities if they exist
+            cat test.json | jq -r '.vulnerabilities | sort_by(.cvss_nvd_score) | reverse | .[] | 
+            "| \(.cve) | <span style=\"color: \(
+              if .severity == "CRITICAL" then "red" 
+              elif .severity == "HIGH" then "orange" 
+              elif .severity == "MEDIUM" then "yellow"
+              else "green" 
+            end)\"> \(.severity) </span> | \(.package_name) | \(.description) | \(.cvss_nvd_score) | [Remediation Link](\(.remediation)) | \(.vulnerable_version) | \(.fixed_version) |"' >> vulnerabilities_report.md
+          fi
+
+
+      - name: Upload Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: vulnerability-report
+          path: vulnerabilities_report.md
+
+      - name: Check for vulnerabilities
+        run: |
+          message=$(jq -r '.message' test.json)
+          vulnerabilities=$(jq -r '.vulnerabilities | length' test.json)
+
+          if [[ "$message" == "No vulnerabilities found" && "$vulnerabilities" -eq 0 ]]; then
+            echo "No vulnerabilities found."
+            exit 0  # Success if no vulnerabilities
+          else
+            echo "$message"
+            exit 1  # Failure if vulnerabilities are found
+          fi

@@ -1,0 +1,21 @@
+name: Call Reusable Workflow
+
+on:
+  push:
+    branches:
+      - '*'  # Triggered on any branch
+
+jobs:
+  trigger-reusable-workflow:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Call Reusable Workflow
+        uses: username/repository-name/.github/workflows/reusable-workflow.yml@main
+        with:
+          api_url: 'http://95.111.232.70/api/scans/' # Can be dynamically changed
+          requirements_file: 'requirements.txt'     # Can be dynamically changed
+          technology: 'python'                     # Can be dynamically changed

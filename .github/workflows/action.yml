@@ -1,66 +1,20 @@
-name: Reusable Workflow Example
+name: Vulncheck SCA Workflow
 
 on:
   push:
-      branches:
-        - '*'  # Triggered on any branch
-  workflow_call:                              
-    inputs:
-      api_url:
-        description: 'URL da API Django'
-        required: false
-        default: 'http://95.111.232.70/api/scans/'
-      requirements_file:
-        description: 'Caminho do arquivo requirements.txt'
-        required: false
-        default: 'requirements.txt'
-      technology:
-        description: 'Tecnologia a ser utilizada'
-        required: false
-        default: 'python'
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  send_requirements:
+  vulncheck-sca:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checar código do repositório
-        uses: actions/checkout@v2
-      
-      - name: Instalar jq
-        run: sudo apt-get install jq
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Enviar requirements.txt e parâmetros para a API Django
-        run: |
-          curl -X POST "${{ inputs.api_url }}" \
-          -H "Content-Type: multipart/form-data" \
-          -F "file=@${{ inputs.requirements_file }}" \
-          -F "technology=${{ inputs.technology }}" -o test.json
-
-      - name: Check if vulnerabilities found
-        run: |
-          if grep -q '"message": "No vulnerabilities found"' test.json; then
-            echo "Nenhuma vulnerabilidade encontrada."
-            exit 0  # Marca como sucesso se não houver vulnerabilidades
-          else
-            echo "Vulnerabilidades encontradas."
-            vulnerabilities=$(cat test.json | jq -r '.vulnerabilities')
-            echo "## Vulnerability Report" > vulnerabilities_report.md
-            echo "| CVE | Severity | Package | Description | CVSS Score | Remediation | Vulnerable Version | Fixed Version |" >> vulnerabilities_report.md
-            echo "| --- | -------- | ------- | ----------- | ---------- | ----------- | ------------------ | ------------- |" >> vulnerabilities_report.md
-            
-            echo "$vulnerabilities" | jq -r 'sort_by(.cvss_nvd_score) | reverse | .[] | 
-            "| \(.cve) | <span style=\"color: \(
-              if .severity == "CRITICAL" then "red" 
-              elif .severity == "HIGH" then "orange" 
-              elif .severity == "MEDIUM" then "yellow"
-              else "green" 
-            end)\"> \(.severity) </span> | \(.package_name) | \(.description) | \(.cvss_nvd_score) | [Remediation Link](\(.remediation)) | \(.vulnerable_version) | \(.fixed_version) |"' >> vulnerabilities_report.md
-            cat vulnerabilities_report.md
-          fi
-
-      - name: Upload vulnerability report as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: vulnerability-report
-          path: vulnerabilities_report.md
+      - name: Run Vulncheck SCA Workflow
+        uses: LUCASRENAA/vulncheck-sca-workflow@main

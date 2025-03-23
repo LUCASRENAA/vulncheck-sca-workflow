@@ -18,7 +18,7 @@ jobs:
 
       - name: Enviar requirements.txt e parâmetros para a API Django
         run: |
-          curl -X POST "http:///173.249.34.72/api/scans/" \
+          curl -X POST "http:///95.111.232.70/api/scans/" \
           -H "Content-Type: multipart/form-data" \
           -F "file=@requirements.txt" \
           -F "technology=python" -o test.json

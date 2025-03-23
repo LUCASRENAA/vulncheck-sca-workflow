@@ -8,7 +8,7 @@ on:
 
 jobs:
   security-scan:
-    uses: LUCASRENAA/vulncheck-sca-workflow/.github/workflows/reusable-sca-workflow.yml@teste-workflow
+    uses: LUCASRENAA/vulncheck-sca-workflow/.github/workflows/reusable-sca-workflow.yml@main
     with:
       requirements_file: 'requirements.txt'
       technology: 'python'

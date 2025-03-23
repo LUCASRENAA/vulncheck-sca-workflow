@@ -7,7 +7,7 @@ on:
 
 jobs:
   trigger-reusable-workflow:
-    uses: LUCASRENAA/vulncheck-sca-workflow/.github/workflows/action.yml@teste-workflow-sca
+    uses: LUCASRENAA/vulncheck-sca-workflow/.github/workflows/action.yml@teste-workflow-sca2
     with:
       api_url: 'http://95.111.232.70/api/scans/' # Can be dynamically changed
       requirements_file: 'requirements.txt'     # Can be dynamically changed

@@ -11,4 +11,4 @@ jobs:
     with:
       api_url: 'http://95.111.232.70/api/scans/' # Can be dynamically changed
       requirements_file: 'requirements.txt'     # Can be dynamically changed
-      technology: 'python'                     # Can be dynamically changed
+      technology: 'python'                     # Can be dynamically changedd

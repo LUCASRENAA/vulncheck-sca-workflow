@@ -1,15 +1,11 @@
-name: Call Reusable Workflow
-
+name: Call External Workflow
 on:
   push:
-    branches:
-      - '*'  # Será acionado em qualquer branch
+    branches: [ main ]
 
 jobs:
-  trigger-reusable-workflow:
+  call-workflow:
     uses: LUCASRENAA/vulncheck-sca-workflow/.github/workflows/action.yml@teste-workflow-sca2
-    with:
-      api_url: 'http://95.111.232.70/api/scans/'  # Pode ser alterado dinamicamente
-      requirements_file: 'requirements.txt'     # Pode ser alterado dinamicamente
-      technology: 'python'                      # Pode ser alterado dinamicamente
-    
+    # Se precisar passar secrets:
+    # secrets:
+    #   secret_name: ${{ secrets.SECRET_NAME }}

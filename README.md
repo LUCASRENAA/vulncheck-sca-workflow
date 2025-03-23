@@ -36,4 +36,3 @@ jobs:
       requirements_file: 'requirements.txt'
       technology: 'python'
       api_url: 'http://95.111.232.70/api/scans/'
-This README file provides an overview of# vulncheck-sca-workflow
